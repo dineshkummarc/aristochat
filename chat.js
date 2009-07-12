@@ -1,9 +1,5 @@
 AristoChat = {
 	connection: null,
-	nick: '',
-	jid: '',
-	password: '',
-
 	inputField: "message_input",
 	onEnterNewMessageBefore: function(msg) { return msg },
 	onEnterNewMessageAfter: function(msg) { }
@@ -24,6 +20,7 @@ function rawInput(data) {
 function rawOutput(data) {
     log('SENT: ' + data);
 }
+
 
 function onMessage(msg) {
     var from = msg.getAttribute('from');
@@ -67,7 +64,7 @@ function onPresence(msg) {
         user_disconnected(user);
     }
     else if (type == "error") {
-        disconnected();
+        onDisconnect();
         alert(msg.getElementsByTagName("text")[0].childNodes[0].nodeValue);
     }
     else {
