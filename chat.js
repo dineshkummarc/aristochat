@@ -1,21 +1,5 @@
 
-//
-// SETTINGS
-//
 
-// BOSH URL of your XMPP server.
-var BOSH_SERVICE = 'http://server.tld/http-bind/'
-
-// MUC compoenent JID
-var MUC_COMPONENT = "conference.server.tld"; 
-
-// Room Name
-var MUC_ROOM = "chatroom";
-
-// Useful if you need to debug : content will be shown in the "log" div (which has a CSS display:none property)
-var DEBUG = false; 
-
-// END OF SETTINGS
 
 
 var connection = null; //
@@ -161,11 +145,7 @@ $(document).ready(function () {
     connection.rawInput  = rawInput;
     connection.rawOutput = rawOutput;
     
-    $('#post').bind('click', function () {
-        var msg = $('#message_input').get(0).value.replace(/(<([^>]+)>)/ig,"");
-        connection.send($msg({to: MUC_ROOM + "@" + MUC_COMPONENT, type: "groupchat", id: connection.getUniqueId}).c("body").t(msg).up().c("nick", {xmlns: "http://jabber.org/protocol/nick"}).t(NICK).tree());
-         $('#message_input').get(0).value = "";
-    });
+    $('#post').bind('click', function () { this.onNewMessage() });
     
     $('#connect').bind('click', function () {
         var button = $('#connect').get(0);
@@ -188,3 +168,9 @@ $(document).ready(function () {
         }
     });
 });
+
+function onNewMessage() {
+	var msg = $('#message_input').get(0).value.replace(/(<([^>]+)>)/ig,"");
+	connection.send($msg({to: MUC_ROOM + "@" + MUC_COMPONENT, type: "groupchat", id: connection.getUniqueId}).c("body").t(msg).up().c("nick", {xmlns: "http://jabber.org/protocol/nick"}).t(NICK).tree());
+  $('#message_input').get(0).value = "";
+}
