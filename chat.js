@@ -87,17 +87,17 @@ function onConnect(status) {
     } else if (status == Strophe.Status.CONNFAIL) {
         log('Strophe failed to connect.');
         $('#status').text('Connection failed');
-        disconnected();
+        onDisconnect();
         $('#loader').hide();
     } else if (status == Strophe.Status.DISCONNECTED) {
         log('Strophe is disconnected.');
         $('#status').text('Disconnected');
-        disconnected();
+        onDisconnect();
         $('#loader').hide();
     } else if (status == Strophe.Status.AUTHFAIL) {
         $('#status').text('Authentication failed');
         alert("Authentication failed, please retry.");
-        disconnected();
+        onDisconnect();
         $('#loader').hide();
     } else if (status == Strophe.Status.CONNECTED) {
         // Handlers
@@ -121,7 +121,7 @@ function connected() {
     $('#post').removeAttr("disabled"); // To enable
 }
 
-function disconnected() {
+function onDisconnect() {
     if(NICK != "") {
         user_disconnected(NICK);
     }
