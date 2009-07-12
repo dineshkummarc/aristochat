@@ -1,8 +1,15 @@
-var connection = null; //
-var NICK = ''; 
-var JID = '';
-var PASSWORD = '';
+AristoChat = {
+	connection: null,
+	nick: '',
+	jid: '',
+	password: '',
 
+	inputField: "message_input",
+	onEnterNewMessageBefore: function(msg) { return msg },
+	onEnterNewMessageAfter: function(msg) { }
+}
+
+var connection = AristoChat.connection; //
 
 function log(msg) {
     if(DEBUG) {
@@ -26,7 +33,7 @@ function onMessage(msg) {
     
     if (type == "groupchat" && body) {
         body = body.nodeValue.replace(/(<([^>]+)>)/ig,"");
-        if(user == NICK) {
+        if(user == AristoChat.nick) {
             $('#chat').append("<tr class='message'><td class='me'>"+ user + "</td><td class='body'>" + body +"</td></tr>");            
         }
         else {
@@ -106,13 +113,13 @@ function onConnect(status) {
         connected();
         log('Strophe is connected.');
         // Entrering the room
-        connection.send($pres({to: MUC_ROOM + "@" + MUC_COMPONENT + "/" + NICK}).c("x", {xmlns: "http://jabber.org/protocol/muc"}).tree());
+        connection.send($pres({to: MUC_ROOM + "@" + MUC_COMPONENT + "/" + AristoChat.nick}).c("x", {xmlns: "http://jabber.org/protocol/muc"}).tree());
         $('#loader').hide();
     }
 }
 
 function connected() {
-    user_connected(NICK);
+    user_connected(AristoChat.nick);
     $('#status').text('Connected');
     $('#connect').get(0).value = 'disconnect';
     $('#login').hide();
@@ -122,8 +129,8 @@ function connected() {
 }
 
 function onDisconnect() {
-    if(NICK != "") {
-        user_disconnected(NICK);
+    if(AristoChat.nick != "") {
+        user_disconnected(AristoChat.nick);
     }
     $('#post').attr("disabled", "disabled"); // To disable
     $('#connect').get(0).value = 'connect';
@@ -149,14 +156,14 @@ $(document).ready(function () {
             $('#connect').attr("disabled", "disabled"); // To disable 
             $('#loader').show();
             if($('#nick').get(0).value == "") {
-                NICK = Strophe.getNodeFromJid($('#jid').get(0).value);
+                AristoChat.nick = Strophe.getNodeFromJid($('#jid').get(0).value);
             }
             else {
-                NICK = $('#nick').get(0).value;
+                AristoChat.nick = $('#nick').get(0).value;
             }
-            JID = $('#jid').get(0).value;
-            PASSWORD = $('#pass').get(0).value;
-            connection.connect(JID, PASSWORD, onConnect);
+            AristoChat.jid = $('#jid').get(0).value;
+            AristoChat.password = $('#pass').get(0).value;
+            connection.connect(AristoChat.jid, AristoChat.password, onConnect);
         } else {
             $('#connect').attr("disabled", "disabled"); // To disable 
             $('#loader').show();
@@ -169,13 +176,9 @@ $(document).ready(function () {
 function sendMessageWithCallbacks() {
 	var msg = $('#'+AristoChat.inputField).get(0).value.replace(/(<([^>]+)>)/ig,"");
 	msg = AristoChat.onEnterNewMessageBefore(msg);
-	connection.send($msg({to: MUC_ROOM + "@" + MUC_COMPONENT, type: "groupchat", id: connection.getUniqueId}).c("body").t(msg).up().c("nick", {xmlns: "http://jabber.org/protocol/nick"}).t(NICK).tree());
+	connection.send($msg({to: MUC_ROOM + "@" + MUC_COMPONENT, type: "groupchat", id: connection.getUniqueId}).c("body").t(msg).up().c("nick", {xmlns: "http://jabber.org/protocol/nick"}).t(AristoChat.nick).tree());
   $('#'+AristoChat.inputField).get(0).value = "";
 	AristoChat.onEnterNewMessageAfter(msg);
 }
 
-AristoChat = {
-	inputField: "message_input",
-	onEnterNewMessageBefore: function(msg) { return msg },
-	onEnterNewMessageAfter: function(msg) { }
-}
+
