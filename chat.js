@@ -141,7 +141,7 @@ $(document).ready(function () {
     connection.rawInput  = rawInput;
     connection.rawOutput = rawOutput;
     
-    $('#post').bind('click', onNewMessage);
+    $('#post').bind('click', sendMessageWithCallbacks);
     
     $('#connect').bind('click', function () {
         var button = $('#connect').get(0);
@@ -165,8 +165,16 @@ $(document).ready(function () {
     });
 });
 
-function onNewMessage() {
+
+function sendMessageWithCallbacks() {
 	var msg = $('#message_input').get(0).value.replace(/(<([^>]+)>)/ig,"");
+	msg = AristoChat.onEnterNewMessageBefore(msg);
 	connection.send($msg({to: MUC_ROOM + "@" + MUC_COMPONENT, type: "groupchat", id: connection.getUniqueId}).c("body").t(msg).up().c("nick", {xmlns: "http://jabber.org/protocol/nick"}).t(NICK).tree());
   $('#message_input').get(0).value = "";
+	AristoChat.onEnterNewMesageAfter(msg);
+}
+
+AristoChat = {
+	onEnterNewMessageBefore: function(msg) { return msg },
+	onEnterNewMessage: function(msg) { }
 }
