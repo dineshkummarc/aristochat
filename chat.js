@@ -167,14 +167,15 @@ $(document).ready(function () {
 
 
 function sendMessageWithCallbacks() {
-	var msg = $('#message_input').get(0).value.replace(/(<([^>]+)>)/ig,"");
+	var msg = $('#'+AristoChat.inputField).get(0).value.replace(/(<([^>]+)>)/ig,"");
 	msg = AristoChat.onEnterNewMessageBefore(msg);
 	connection.send($msg({to: MUC_ROOM + "@" + MUC_COMPONENT, type: "groupchat", id: connection.getUniqueId}).c("body").t(msg).up().c("nick", {xmlns: "http://jabber.org/protocol/nick"}).t(NICK).tree());
-  $('#message_input').get(0).value = "";
+  $('#'+AristoChat.inputField).get(0).value = "";
 	AristoChat.onEnterNewMesageAfter(msg);
 }
 
 AristoChat = {
+	inputField: "message_input",
 	onEnterNewMessageBefore: function(msg) { return msg },
 	onEnterNewMessage: function(msg) { }
 }
