@@ -1,7 +1,3 @@
-
-
-
-
 var connection = null; //
 var NICK = ''; 
 var JID = '';
@@ -145,7 +141,7 @@ $(document).ready(function () {
     connection.rawInput  = rawInput;
     connection.rawOutput = rawOutput;
     
-    $('#post').bind('click', function () { this.onNewMessage() });
+    $('#post').bind('click', onNewMessage);
     
     $('#connect').bind('click', function () {
         var button = $('#connect').get(0);
